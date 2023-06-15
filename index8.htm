@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Demo</title>
+	<script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+	<script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js'></script>
+	<script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-threex-location-only.js'></script>
+    <script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar_render.js'></script>
+    <style>
+        .arjs-loader {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .arjs-loader div {
+            text-align: center;
+            font-size: 1.25em;
+            color: white;
+        }
+    </style>
+</head>
+
+<body style='margin: 0; overflow: hidden;'>
+    <div class="arjs-loader">
+        <div>Loading, please wait...</div>
+    </div>
+    <a-scene vr-mode-ui="enabled: false" embedded
+        arjs='sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false;'>
+        <a-assets>
+            <img id="test_img" src="static/assets/l-heart.jpeg">
+        </a-assets>
+        <a-camera gps-camera='gpsMinDistance: 5; minDistance: 2; maxDistance: 50; gpsTimeInterval: 500'
+            look-controls-enabled='false' arjs-look-controls='smoothingFactor: 0.1' rotation-reader></a-camera>
+
+
+        <a-box material="color: blue" gps-entity-place="latitude: 28.445305; longitude: 77.516267" position="0 165 0"
+            scale="2.5 2.5 2.5" rotation="0 180 0"> </a-box>
+
+        <a-box material="color: green" gps-entity-place="latitude: 28.449297; longitude: 77.518173" position="0 165 0"
+            scale="3.5 3.5 3.5" rotation="0 180 0"> </a-box>
+
+        <!-- <a-box material="color: red" gps-entity-place="latitude: 28.445627; longitude: 77.517443" position="0 165 0"
+            scale="3.5 3.5 3.5" rotation="0 180 0"> </a-box> -->
+
+        <!-- <a-entity look-at="[gps-camera]" gltf-model="static/assets/wall/scene.gltf" position="0 165 0"
+            rotation="0 180 0" scale="3.5 3.5 3.5" gps-entity-place="latitude: 28.445601; longitude: 77.516939"
+            animation-mixer /> -->
+
+        <!-- <a-box material="color: blue" gps-entity-place="latitude: 38.1382809; longitude: 23.8562597" position="0 325 0" scale="3.5 3.5 3.5" rotation="0 180 0"> </a-box>
+        <a-box material="color: red" gps-entity-place="latitude: 38.1382809; longitude: 23.8562597" position="0 328 0" scale="3.5 3.5 3.5" rotation="0 180 0" clicker></a-box>
+        <a-entity look-at="[gps-camera]" gltf-model="static/assets/wall/scene.gltf" position="0 325 0" rotation="0 90 0" scale="3.5 3.5 3.5" gps-entity-place="latitude: 38.1382809; longitude: 23.8562597" animation-mixer/> -->
+
+    </a-scene>
+    <div id='setloc'
+        style='position:absolute; left: 10px; bottom: 2%; z-index:999; background-color: blue; color: white; padding: 10px'>
+        Lat:<label id="lat"></label>
+        Lon: <label id="lon"></label>
+        Dist: <label id="dist"></label>
+    </div>
+    <script type="text/javascript">
+
+        window.addEventListener('load', () => {
+            document.querySelector('[gps-entity-place]').addEventListener('gps-entity-place-update-position', (payload) => {
+                let v = parseInt(payload.detail.distance);
+                document.getElementById("dist").innerHTML = `${v} meter`;
+                navigator.geolocation.getCurrentPosition((position) => {
+                    let lat = position.coords.latitude;
+                    let long = position.coords.longitude;
+                    document.getElementById("lat").innerHTML = lat.toFixed(4);
+                    document.getElementById("lon").innerHTML = long.toFixed(4);
+                });
+            })
+        });
+
+    </script>
+</body>
+
+</html>
